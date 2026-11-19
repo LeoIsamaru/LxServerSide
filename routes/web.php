@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\UserController;
@@ -8,7 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 
 // URL alvo
-Route::get('/', [UtilController::class, 'loadWelcome'])->name('welcome');
+// Route::get('/', [UtilController::class, 'loadWelcome'])->name('welcome');
+Route::get('/', [UtilController::class, 'loadHomepage'])->name('home');
 
 
 Route::get('/teste', function () {
@@ -29,7 +31,7 @@ Route::get('/hello/{message}', function ($message) {
 
 
 //rota de homepage
- Route::get('/homepage',[UtilController::class, 'loadHomepage'])->name('home');
+ Route::get('/home',[UtilController::class, 'loadHomepage'])->name('home');
 
 
 // URL alvo
@@ -58,16 +60,6 @@ Route::get('/addusers', [UserController::class, 'addUsers' ])->name('users.add')
 
 
 
-//rota fallback do exercicio pagina 20
-Route::fallback(function(){
-    return view('users.fallbackusers');
-});
-
-
-
-
-
-
 
 
 
@@ -78,8 +70,8 @@ Route::fallback(function(){
 
 
 //rota de ver / editar users
- Route::get('/edit-users/{id}',[UserController::class, 'editUsers'])->name('users.edit');
-
+ Route::get('/edit-users/{id}',[UserController::class, 'editUsers'])->name('users.edit')->middleware('auth');
+// auth permite o bloqueio da função a users não logados
 
 
 
@@ -152,6 +144,25 @@ Route::get('/addgifts', [GiftController::class, 'addGifts' ])->name('gifts.add')
 
 //rota de atualizar gifts
 Route::put('/updategifts', [GiftController::class, 'updateGifts'])->name('gifts.update');
+
+//===================================================================================================
+
+//=================================== Exercicio Middleware (UCProgramaçãoWebS_OtherComponents.pdf - pag. 25) ===================================
+
+
+
+Route::get('/dashboard',[DashboardController::class, 'dashboard'])->name('dashboard')->middleware('auth');
+
+
+
+
+// Route::get('/dashboard', function () {   //caminho do browser
+//     return view('dashboard.home'); //nome do ficheiro nas views
+// })->name('dashboard'); //nome que quisermos dar ha rota, para garantir que é chamada a correta. apenas usado para programação
+
+
+
+
 
 //===================================================================================================
 

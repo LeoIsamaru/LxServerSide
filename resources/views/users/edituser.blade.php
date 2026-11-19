@@ -5,7 +5,7 @@
 
 
 
-  <form method="POST" action="{{ route('users.update') }}">
+  <form method="POST" action="{{ route('users.update') }}" enctype="multipart/form-data">
        @method('PUT')
 
         @csrf
@@ -48,6 +48,15 @@
             <input value="{{ $userInfo->nif }}" type="text" name="nif" class="form-control"
                 id="exampleInputEmail1" aria-describedby="emailHelp">
         </div>
+
+
+
+    <div class="mb-3">
+            <label for="">Foto</label>
+            <input type="file" name="photo" accept="image/*">
+        </div>
+
+
 
 
 

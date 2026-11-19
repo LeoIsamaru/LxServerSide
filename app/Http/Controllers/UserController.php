@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -14,14 +15,29 @@ class UserController extends Controller
 public function allUsers() {  //nome de função que nos damos
     $usersWDB = $this->loadUsersWDB();
 
+
+    $searchPar = request()->query('search')?request()->query('search'):null; // se na url tiver algum search valor, atribui esse valor no request
+
     // $usersFromDB = DB::table('users')
-    $usersFromDB = User::select('id','name','address','email','nif')
+    // $usersFromDB = User::select('id','name','address','email','nif')
+        $query = User::select('id','name','address','email','nif','photo');
+
+
+    if($searchPar){
+            $query->where('name','LIKE' , "%{$searchPar}%")
+            ->orWhere('email','LIKE' , "%{$searchPar}%");
+        }
+
+
+
+        $usersFromDB=$query->get();
 
     // ->where('name','Leo')
     // ->select('id','name','address','email','nif')
     // ->where('id',3)
     // ->whereNotNull('updated_at')
-    ->get();// retorna tudo em array
+
+    // ->get();// retorna tudo em array
 
     // ->first();//retorna o apenas o primeiro resultado, sem formatação
     // ->last();//retorna o apenas o ultimo resultado, sem formatação
@@ -118,13 +134,21 @@ public  function addUsers() {
 public function  updateUSer(Request $request){
 
         $request->validate([
-            'name' =>'required|max:50'
+            'name' =>'required|max:50',
+            'photo' => 'image'
         ]);
+
+        if($request->hasFile('photo')){
+            //armazenar no storage e guarda o caminho numa var
+            $photo = Storage::putFile('userPhotos', $request->photo);
+        }
+
 
         User::where('id', $request->id)->update([
             'name'=> $request->name,
             'address'=> $request->address,
             'nif'=> $request->nif,
+            'photo'=>isset($photo)? $photo:null
         ]);
 
         return redirect()->route('users.all')->with('message', 'user actualizado com sucesso!');

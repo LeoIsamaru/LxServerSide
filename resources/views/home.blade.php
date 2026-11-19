@@ -18,8 +18,15 @@
     @endif  --}}
 
 {{-- em modo ternario: --}}
-    <h5>Olá {{isset($courseName)? $courseName : 'user' }}</h5>
+    {{-- <h5>Olá {{isset($courseName)? $courseName : 'user' }}</h5> --}}
+
 <h6>O contacto é o {{$contactInfo['name']}} - {{$contactInfo['contact']}}</h6>
+
+<p></p>
+
+    @auth
+        <h6>Olá {{Auth::user()->name}}!</h6>
+    @endauth
 
 <h5>Alunos da turma</h5>
     <ul>

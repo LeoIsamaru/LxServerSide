@@ -17,30 +17,57 @@
         </div>
     @endif
 
+
+    <form action="">
+<input type="text" name="search">
+<button class="btn btn-secondary" type="submit">Procurar</button>
+    </form>
+
     <h6>Utilizadores da base de dados</h6>
     <table class="table">
         <thead>
             <tr>
+                <th></th>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Address</th>
                 <th scope="col">Nif</th>
+
+                {{-- mostra os butoes apenas se loged in --}}
+                @auth
                 <th></th> {{-- //coluna ver/editar --}}
                 <th></th> {{-- //coluna apagar --}}
-
+                @endauth
             </tr>
         </thead>
         <tbody>
             @foreach ($usersFromDB as $user)
-                <tr>
+            {{-- {{dd($user->photo) }} --}}
+            <tr>
+                    <td><img src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('images/nophoto.jpg') }}"
+                            alt=""> </td>
+
                     <th scope="row">{{$user->id}}</th>
                     <td>{{$user->name}}</td>
                     <td>{{$user->email}}</td>
                     <td>{{$user->address}}</td>
                     <td>{{$user->nif}}</td>
-                    <td><a href="{{route('users.edit', $user->id)}}" class="btn btn-info">Ver /  Editar</a></td>
-                    <td><a href="{{route('users.delete', $user->id )}}" class="btn btn-danger">Apagar</a></td>
+
+                    {{-- esconder o botao editar, apenas visivel apos o login --}}
+                    @auth
+                        <td><a href="{{route('users.edit', $user->id)}}" class="btn btn-info">Ver /  Editar</a></td>
+                    @endauth
+
+
+                    {{-- o botao apagar, apenas visivel para o Admin --}}
+                      @if (Auth::user() && Auth::user()->email =='admin@gmail.com')
+                    <td><a href="{{ route('users.delete', $user->id) }}" class="btn btn-danger">Apagar</a></td>
+                    @endif
+
+
+
+
                 </tr>
             @endforeach
 

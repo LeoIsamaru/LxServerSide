@@ -17,6 +17,14 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+
+    // Definir o tipo de user com base no valor "user_type" na BD
+    const TYPE_ADMIN = 1;
+    const TYPE_GENERIC_USER = 0;
+
+
+
+
     /**
      * Get the attributes that should be cast.
      *
